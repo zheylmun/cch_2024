@@ -1,7 +1,11 @@
+mod five;
 mod minus_one;
 mod two;
 
-use axum::{routing::get, Router};
+use axum::{
+    routing::{get, post},
+    Router,
+};
 
 #[shuttle_runtime::main]
 async fn main() -> shuttle_axum::ShuttleAxum {
@@ -11,6 +15,7 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/2/dest", get(two::egregious_encryption))
         .route("/2/key", get(two::going_the_other_way))
         .route("/2/v6/dest", get(two::v6_dest))
-        .route("/2/v6/key", get(two::v6_key));
+        .route("/2/v6/key", get(two::v6_key))
+        .route("/5/manifest", post(five::manifest));
     Ok(router.into())
 }
