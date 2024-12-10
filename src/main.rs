@@ -1,5 +1,6 @@
 mod five;
 mod minus_one;
+mod nine;
 mod two;
 
 use axum::{
@@ -16,6 +17,9 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/2/key", get(two::going_the_other_way))
         .route("/2/v6/dest", get(two::v6_dest))
         .route("/2/v6/key", get(two::v6_key))
-        .route("/5/manifest", post(five::manifest));
+        .route("/5/manifest", post(five::manifest))
+        .route("/9/milk", post(nine::milk))
+        .route("/9/refill", post(nine::refill))
+        .with_state(nine::MilkState::construct());
     Ok(router.into())
 }
