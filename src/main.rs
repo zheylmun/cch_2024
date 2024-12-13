@@ -1,6 +1,7 @@
 mod five;
 mod minus_one;
 mod nine;
+mod twelve;
 mod two;
 
 use axum::{
@@ -20,6 +21,11 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/5/manifest", post(five::manifest))
         .route("/9/milk", post(nine::milk))
         .route("/9/refill", post(nine::refill))
-        .with_state(nine::MilkState::construct());
+        .with_state(nine::MilkState::construct())
+        .route("/12/board", get(twelve::board_state))
+        .route("/12/reset", post(twelve::reset_board))
+        .route("/12/place/:team/:column", post(twelve::place))
+        .route("/12/random-board", get(twelve::random_board))
+        .with_state(twelve::AppState::construct());
     Ok(router.into())
 }
