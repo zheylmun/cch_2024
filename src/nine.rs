@@ -1,9 +1,8 @@
 use std::sync::{Arc, Mutex};
 
 use axum::{
-    extract::{rejection::JsonRejection, State},
+    extract::State,
     http::{header::CONTENT_TYPE, HeaderMap, Response, StatusCode},
-    Json,
 };
 use chrono::{DateTime, Utc};
 use log::info;
