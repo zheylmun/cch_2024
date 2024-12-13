@@ -14,12 +14,13 @@ pub(super) async fn egregious_encryption(query: Query<EgregiousEncryptionQueryPa
     let from_bytes = query.from.octets();
     // Get the raw bytes of the "key" address
     let key_bytes = query.key.octets();
-    // Make an array to store the resulting destination address bytes
-    let mut dest_bytes: [u8; 4] = [0; 4];
-    for (i, (from_byte, key_byte)) in from_bytes.iter().zip(key_bytes.iter()).enumerate() {
-        // Use the wrapping add to calculate the destination byte
-        dest_bytes[i] = from_byte.wrapping_add(*key_byte);
-    }
+    let dest_bytes: [u8; 4] = from_bytes
+        .iter()
+        .zip(key_bytes.iter())
+        .map(|(a, b)| a.wrapping_add(*b))
+        .collect::<Vec<u8>>()
+        .try_into()
+        .unwrap();
     // Convert the destination bytes to an Ipv4Addr and then to a string
     Ipv4Addr::from(dest_bytes).to_string()
 }
@@ -36,11 +37,13 @@ pub(super) async fn going_the_other_way(query: Query<GoingTheOtherWayQueryParams
     // Get the raw bytes of the "to" address
     let to_bytes = query.to.octets();
     // Make an array to store the resulting destination address bytes
-    let mut key_bytes: [u8; 4] = [0; 4];
-    for (i, (from_byte, to_byte)) in from_bytes.iter().zip(to_bytes.iter()).enumerate() {
-        // Use the wrapping add to calculate the destination byte
-        key_bytes[i] = to_byte.wrapping_sub(*from_byte);
-    }
+    let key_bytes: [u8; 4] = from_bytes
+        .iter()
+        .zip(to_bytes.iter())
+        .map(|(from_byte, to_byte)| to_byte.wrapping_sub(*from_byte))
+        .collect::<Vec<u8>>()
+        .try_into()
+        .unwrap();
     // Convert the destination bytes to an Ipv4Addr and then to a string
     Ipv4Addr::from(key_bytes).to_string()
 }
@@ -57,11 +60,13 @@ pub(super) async fn v6_dest(query: Query<V6DestQueryParams>) -> String {
     // Get the raw bytes of the "key" address
     let key_bytes = query.key.octets();
     // Make an array to store the resulting destination address bytes
-    let mut dest_bytes: [u8; 16] = [0; 16];
-    for (i, (from_byte, key_byte)) in from_bytes.iter().zip(key_bytes.iter()).enumerate() {
-        // Use the wrapping add to calculate the destination byte
-        dest_bytes[i] = from_byte ^ key_byte;
-    }
+    let dest_bytes: [u8; 16] = from_bytes
+        .iter()
+        .zip(key_bytes.iter())
+        .map(|(from_byte, key_byte)| from_byte ^ key_byte)
+        .collect::<Vec<u8>>()
+        .try_into()
+        .unwrap();
     // Convert the destination bytes to an Ipv4Addr and then to a string
     Ipv6Addr::from(dest_bytes).to_string()
 }
@@ -77,11 +82,13 @@ pub(super) async fn v6_key(query: Query<V6KeyQueryParams>) -> String {
     // Get the raw bytes of the "to" address
     let to_bytes = query.to.octets();
     // Make an array to store the resulting destination address bytes
-    let mut key_bytes: [u8; 16] = [0; 16];
-    for (i, (from_byte, to_byte)) in from_bytes.iter().zip(to_bytes.iter()).enumerate() {
-        // Use the wrapping add to calculate the destination byte
-        key_bytes[i] = to_byte ^ from_byte;
-    }
+    let key_bytes: [u8; 16] = from_bytes
+        .iter()
+        .zip(to_bytes.iter())
+        .map(|(to_byte, from_byte)| to_byte ^ from_byte)
+        .collect::<Vec<u8>>()
+        .try_into()
+        .unwrap();
     // Convert the destination bytes to an Ipv6Addr and then to a string
     Ipv6Addr::from(key_bytes).to_string()
 }
