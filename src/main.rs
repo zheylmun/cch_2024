@@ -1,6 +1,7 @@
 mod five;
 mod minus_one;
 mod nine;
+mod sixteen;
 mod twelve;
 mod two;
 
@@ -26,6 +27,9 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/12/reset", post(twelve::reset_board))
         .route("/12/place/:team/:column", post(twelve::place))
         .route("/12/random-board", get(twelve::random_board))
-        .with_state(twelve::AppState::construct());
+        .with_state(twelve::AppState::construct())
+        .route("/16/wrap", post(sixteen::wrap))
+        .route("/16/unwrap", get(sixteen::unwrap))
+        .route("/16/decode", post(sixteen::decode_token));
     Ok(router.into())
 }
