@@ -182,7 +182,12 @@ pub(super) async fn list(
                     .unwrap();
             match token_info {
                 Some(token_info) => token_info.page,
-                None => return Response::builder().status(404).body("".into()).unwrap(),
+                None => {
+                    return Response::builder()
+                        .status(StatusCode::BAD_REQUEST)
+                        .body("".into())
+                        .unwrap();
+                }
             }
         }
         None => 0,
