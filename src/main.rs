@@ -1,6 +1,7 @@
 mod five;
 mod minus_one;
 mod nine;
+mod nineteen;
 mod sixteen;
 mod twelve;
 mod two;
@@ -11,7 +12,12 @@ use axum::{
 };
 
 #[shuttle_runtime::main]
-async fn main() -> shuttle_axum::ShuttleAxum {
+async fn main(#[shuttle_shared_db::Postgres] pool: sqlx::PgPool) -> shuttle_axum::ShuttleAxum {
+    sqlx::migrate!()
+        .run(&pool)
+        .await
+        .expect("Failed to run migrations");
+
     let router = Router::new()
         .route("/", get(minus_one::hello_bird))
         .route("/-1/seek", get(minus_one::seek_redirect))
@@ -30,6 +36,8 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .with_state(twelve::AppState::construct())
         .route("/16/wrap", post(sixteen::wrap))
         .route("/16/unwrap", get(sixteen::unwrap))
-        .route("/16/decode", post(sixteen::decode_token));
+        .route("/16/decode", post(sixteen::decode_token))
+        .route("/19/reset", post(nineteen::reset))
+        .with_state(pool);
     Ok(router.into())
 }
