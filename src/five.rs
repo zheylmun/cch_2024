@@ -3,6 +3,7 @@ use axum::{
     response::Response,
 };
 use cargo_manifest::Manifest;
+use tracing::{error, info};
 
 #[derive(serde::Deserialize)]
 struct Metadata {
@@ -28,15 +29,15 @@ pub(super) async fn manifest(headers: HeaderMap, body: String) -> Response {
             .unwrap();
     };
 
-    log::info!("Content-Type: {:?}", media_type);
-    log::info!("Body: {}", body);
+    info!("Content-Type: {:?}", media_type);
+    info!("Body: {}", body);
     let parsed_manifest: Manifest;
     match media_type.to_str() {
         Ok(media_type) => match media_type {
             "application/toml" => match toml::from_str::<Manifest>(&body) {
                 Ok(manifest) => parsed_manifest = manifest,
                 Err(e) => {
-                    log::error!("Error parsing TOML: {:?}", e);
+                    error!("Error parsing TOML: {:?}", e);
                     return invalid_manifest();
                 }
             },

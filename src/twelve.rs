@@ -2,7 +2,6 @@ use axum::{
     extract::{Path, State},
     http::{Response, StatusCode},
 };
-use log::info;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 use std::{
@@ -10,6 +9,7 @@ use std::{
     sync::{Arc, Mutex},
 };
 use thiserror::Error;
+use tracing::info;
 
 #[derive(Debug, Error)]
 pub(super) enum Error {

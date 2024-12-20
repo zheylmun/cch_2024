@@ -5,8 +5,8 @@ use axum::{
     http::{header::CONTENT_TYPE, HeaderMap, Response, StatusCode},
 };
 use chrono::{DateTime, Utc};
-use log::info;
 use serde::{Deserialize, Serialize};
+use tracing::info;
 
 #[derive(Clone, Copy)]
 pub(super) struct MilkState {

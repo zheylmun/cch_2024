@@ -7,9 +7,10 @@ mod twelve;
 mod two;
 
 use axum::{
-    routing::{get, post},
+    routing::{delete, get, post, put},
     Router,
 };
+use nineteen::QuoteState;
 
 #[shuttle_runtime::main]
 async fn main(#[shuttle_shared_db::Postgres] pool: sqlx::PgPool) -> shuttle_axum::ShuttleAxum {
@@ -38,6 +39,11 @@ async fn main(#[shuttle_shared_db::Postgres] pool: sqlx::PgPool) -> shuttle_axum
         .route("/16/unwrap", get(sixteen::unwrap))
         .route("/16/decode", post(sixteen::decode_token))
         .route("/19/reset", post(nineteen::reset))
-        .with_state(pool);
+        .route("/19/cite/:id", get(nineteen::cite))
+        .route("/19/remove/:id", delete(nineteen::remove))
+        .route("/19/undo/:id", put(nineteen::undo))
+        .route("/19/draft", post(nineteen::draft))
+        .route("/19/list", get(nineteen::list))
+        .with_state(QuoteState { pool });
     Ok(router.into())
 }
