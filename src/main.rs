@@ -4,13 +4,14 @@ mod nine;
 mod nineteen;
 mod sixteen;
 mod twelve;
+mod twenty_three;
 mod two;
 
 use axum::{
     routing::{delete, get, post, put},
     Router,
 };
-use nineteen::QuoteState;
+use tower_http::services::ServeFile;
 
 #[shuttle_runtime::main]
 async fn main(#[shuttle_shared_db::Postgres] pool: sqlx::PgPool) -> shuttle_axum::ShuttleAxum {
@@ -44,6 +45,7 @@ async fn main(#[shuttle_shared_db::Postgres] pool: sqlx::PgPool) -> shuttle_axum
         .route("/19/undo/:id", put(nineteen::undo))
         .route("/19/draft", post(nineteen::draft))
         .route("/19/list", get(nineteen::list))
-        .with_state(QuoteState { pool });
+        .with_state(nineteen::QuoteState { pool })
+        .route_service("/assets/23.html", ServeFile::new("assets/23.html"));
     Ok(router.into())
 }
