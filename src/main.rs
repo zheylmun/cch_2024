@@ -46,6 +46,10 @@ async fn main(#[shuttle_shared_db::Postgres] pool: sqlx::PgPool) -> shuttle_axum
         .route("/19/draft", post(nineteen::draft))
         .route("/19/list", get(nineteen::list))
         .with_state(nineteen::QuoteState { pool })
-        .route_service("/assets/23.html", ServeFile::new("assets/23.html"));
+        .route_service("/assets/23.html", ServeFile::new("assets/23.html"))
+        .route("/23/star", get(twenty_three::star))
+        .route("/23/present/:color", get(twenty_three::present))
+        .route("/23/ornament/:state/:number", get(twenty_three::ornament))
+        .route("/23/lockfile", post(twenty_three::lockfile));
     Ok(router.into())
 }
