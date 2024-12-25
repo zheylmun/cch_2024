@@ -11,7 +11,6 @@ use axum::{
     routing::{delete, get, post, put},
     Router,
 };
-use tower_http::services::ServeFile;
 
 #[shuttle_runtime::main]
 async fn main(#[shuttle_shared_db::Postgres] pool: sqlx::PgPool) -> shuttle_axum::ShuttleAxum {
@@ -46,7 +45,7 @@ async fn main(#[shuttle_shared_db::Postgres] pool: sqlx::PgPool) -> shuttle_axum
         .route("/19/draft", post(nineteen::draft))
         .route("/19/list", get(nineteen::list))
         .with_state(nineteen::QuoteState { pool })
-        .route_service("/assets/23.html", ServeFile::new("assets/23.html"))
+        .route("/assets/23.html", get(twenty_three::html))
         .route("/23/star", get(twenty_three::star))
         .route("/23/present/:color", get(twenty_three::present))
         .route("/23/ornament/:state/:number", get(twenty_three::ornament))

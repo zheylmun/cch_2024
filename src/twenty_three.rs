@@ -7,6 +7,14 @@ use axum::{
 };
 use serde::Deserialize;
 use tracing::info;
+const HTMX: &str = include_str!("../assets/23.html");
+pub(super) async fn html() -> Response<Body> {
+    Response::builder()
+        .status(200)
+        .header("Content-Type", "text/html")
+        .body(HTMX.into())
+        .unwrap()
+}
 
 pub(super) async fn star() -> &'static str {
     "<div class=\"lit\" id=\"star\"></div>"
